@@ -137,3 +137,24 @@ bool VendingMachine::purchase()
 	m_dispenser.emplace(std::move(purchased));
 	return true;
 }
+
+Slot VendingMachine::insertSlot(Slot slot,int position)
+{
+	if (!m_container.at(position).empty() || position > m_container.size() || position < 1)
+		return slot;
+	++m_slotsTaken;
+	std::swap(slot, m_container.at(++position));
+	return slot;
+}
+
+Slot VendingMachine::extractSlot(int position, int accessCode = 0)
+{
+	auto temp = Slot();
+	if (accessCode != m_accessCode || position > m_container.size() || position < 1)
+		return temp;
+
+	const Slot slot = m_container.at(position);
+	std::swap(temp, m_container.at(position));
+
+	return slot;
+}

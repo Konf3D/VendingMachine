@@ -4,6 +4,8 @@
 #include <stack>
 #include <queue>
 
+using Slot = std::stack<Snack>; // sloth
+
 class CashSlot
 {
 private:
@@ -57,22 +59,22 @@ class VendingMachine
 private:
 	PanelSlot m_panel;
 	CashSlot m_cash;
-	std::vector<std::stack<Snack>> m_container;
+	std::vector<Slot> m_container;
 	std::queue<Snack> m_dispenser;
 	const int m_slots;
 	const int m_accessCode;
 	int m_revenue;
+	int m_slotsTaken = 0;
 public:
 	VendingMachine();
 	VendingMachine(int slots);
 	VendingMachine(int slots, int accessCode);
 	~VendingMachine();
 public:
-	int insertSlot(std::stack<Snack> slot);
-	std::stack<Snack> extractSlot(int code);
+	Slot insertSlot(Slot slot, int position);
+	Slot extractSlot(int slotPosition, int accessCode);
 	void deposit(int money);
 	int checkout();
 	bool purchase();
-	void inspectChosenItem() const;
-	void inspectChosenItem(int position) const;
+	Snack grabPurchasedItem();
 };
