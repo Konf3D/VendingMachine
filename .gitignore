@@ -31,3 +31,6 @@
 *.out
 *.app
 /.vs/VendingMachine/v17
+/x64/Debug
+/VendingMachine/x64/Debug/VendingMachine.tlog
+/VendingMachine/x64/Debug
