@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 #include <stack>
-#include <deque>
+#include <queue>
 
 class CashSlot
 {
@@ -22,16 +22,15 @@ public:
 class PanelSlot
 {
 private:
-	int m_row;
-	int m_column;
+	int m_position;
 
 public:
 	PanelSlot();
 	~PanelSlot();
 
 public:
-	void chooseSnack(int row, int column);
-	Snack* purchaseSnack(VendingMachine* vm);
+	void setPosition(int position);
+	int getPosition();
 };
 
 class Snack
@@ -46,24 +45,34 @@ public:
 	Snack(std::string name);
 	Snack(std::string name, int price);
 	Snack(std::string name, int price, int calories);
-
 	~Snack();
+public:
+	std::string getName() const;
+	int getPrice() const;
+	int getCalories() const;
 };
 
 class VendingMachine
 {
 private:
-	const PanelSlot m_panel;
-	const CashSlot m_cash;
+	PanelSlot m_panel;
+	CashSlot m_cash;
 	std::vector<std::stack<Snack>> m_container;
-	const int slots;
-	const int accessCode;
-	int revenue = 0;
+	std::queue<Snack> m_dispenser;
+	const int m_slots;
+	const int m_accessCode;
+	int m_revenue;
 public:
 	VendingMachine();
 	VendingMachine(int slots);
 	VendingMachine(int slots, int accessCode);
 	~VendingMachine();
 public:
-
+	int insertSlot(std::stack<Snack> slot);
+	std::stack<Snack> extractSlot(int code);
+	void deposit(int money);
+	int checkout();
+	bool purchase();
+	void inspectChosenItem() const;
+	void inspectChosenItem(int position) const;
 };

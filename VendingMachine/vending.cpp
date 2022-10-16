@@ -26,7 +26,7 @@ int CashSlot::checkout()
 }
 
 PanelSlot::PanelSlot()
-	:m_row(0),m_column(0)
+	:m_position(0)
 {
 }
 
@@ -34,15 +34,14 @@ PanelSlot::~PanelSlot()
 {
 }
 
-void PanelSlot::chooseSnack(int row, int column)
+int PanelSlot::getPosition()
 {
-	m_row = row;
-	m_column = column;
+	return m_position;
 }
 
-Snack* PanelSlot::purchaseSnack(VendingMachine* vm)
+void PanelSlot::setPosition(int position)
 {
-	return nullptr;
+	m_position = position;
 }
 
 Snack::Snack()
@@ -67,4 +66,74 @@ Snack::Snack(std::string name, int price)
 
 Snack::~Snack()
 {
+}
+
+std::string Snack::getName() const
+{
+	return m_name;
+}
+
+int Snack::getPrice() const
+{
+	return m_price;
+}
+
+int Snack::getCalories() const
+{
+	return m_calories;
+}
+
+VendingMachine::VendingMachine()
+	:m_cash(),m_panel(),m_slots(25),m_accessCode(0),m_revenue(0)
+{
+
+}
+VendingMachine::VendingMachine(int slots)
+	: m_cash(), m_panel(), m_slots(slots), m_accessCode(0),m_revenue(0)
+{
+
+}
+VendingMachine::VendingMachine(int slots, int accessCode)
+	: m_cash(), m_panel(), m_slots(25), m_accessCode(accessCode),m_revenue(0)
+{
+
+}
+VendingMachine::~VendingMachine()
+{
+
+}
+
+void VendingMachine::deposit(int money)
+{
+	m_revenue += money;
+}
+
+int VendingMachine::checkout()
+{
+	const int change = m_revenue;
+	m_revenue = 0;
+	return change;
+}
+
+bool VendingMachine::purchase()
+{
+	const int snackPosition = m_panel.getPosition();
+
+	if (snackPosition < 1)
+		return false;
+
+	if (m_container.at(snackPosition).empty())
+		return false;
+
+	Snack purchased = m_container.at(snackPosition).top();
+	if (purchased.getPrice() > m_revenue)
+		return false;
+
+	m_container.at(snackPosition).pop();
+
+	m_cash.deposit(purchased.getPrice());
+	m_revenue -= purchased.getPrice();
+
+	m_dispenser.emplace(std::move(purchased));
+	return true;
 }
