@@ -8,9 +8,19 @@ int main()
 	Snack* twix = new Snack("twix", 40, 110);
 	Snack* mars = new Snack("Mars", 45, 115);
 
-	slot.push(snickers);
-	slot.push(twix);
-	slot.push(mars);
+	slot.push(*snickers);
+	slot.push(*twix);
+	slot.push(*mars);
 
+	vm.insertSlot(slot);
+
+	vm.deposit(100);
+	vm.selectSlot(0);
+
+	vm.purchase();
+
+	auto hand1 = vm.grabPurchasedItem();
+
+	system("pause");
 
 }

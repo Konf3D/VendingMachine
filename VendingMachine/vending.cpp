@@ -119,7 +119,7 @@ bool VendingMachine::purchase()
 {
 	const int snackPosition = m_panel.getPosition();
 
-	if (snackPosition < 1)
+	if (snackPosition < 0)
 		return false;
 
 	if (m_container.at(snackPosition).empty())
@@ -138,23 +138,32 @@ bool VendingMachine::purchase()
 	return true;
 }
 
-Slot VendingMachine::insertSlot(Slot slot,int position)
+Slot VendingMachine::insertSlot(Slot slot)
 {
-	if (!m_container.at(position).empty() || position > m_container.size() || position < 1)
-		return slot;
 	++m_slotsTaken;
-	std::swap(slot, m_container.at(++position));
+	m_container.emplace_back(slot);
 	return slot;
 }
 
 Slot VendingMachine::extractSlot(int position, int accessCode = 0)
 {
 	auto temp = Slot();
-	if (accessCode != m_accessCode || position > m_container.size() || position < 1)
+	if (accessCode != m_accessCode || position > m_container.size() || position < 0)
 		return temp;
 
 	const Slot slot = m_container.at(position);
-	std::swap(temp, m_container.at(position));
+	m_container.pop_back();
 
 	return slot;
+}
+
+Snack VendingMachine::grabPurchasedItem()
+{
+	Snack snack = m_dispenser.front();
+	m_dispenser.pop();
+	return snack;
+}
+void VendingMachine::selectSlot(int position)
+{
+	m_panel.setPosition(position);
 }

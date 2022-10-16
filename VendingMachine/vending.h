@@ -4,7 +4,6 @@
 #include <stack>
 #include <queue>
 
-using Slot = std::stack<Snack>; // sloth
 
 class CashSlot
 {
@@ -54,6 +53,7 @@ public:
 	int getCalories() const;
 };
 
+using Slot = std::stack<Snack>; // sloth
 class VendingMachine
 {
 private:
@@ -71,10 +71,11 @@ public:
 	VendingMachine(int slots, int accessCode);
 	~VendingMachine();
 public:
-	Slot insertSlot(Slot slot, int position);
+	Slot insertSlot(Slot slot);
 	Slot extractSlot(int slotPosition, int accessCode);
 	void deposit(int money);
 	int checkout();
 	bool purchase();
 	Snack grabPurchasedItem();
+	void selectSlot(int position);
 };
